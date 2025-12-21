@@ -38,7 +38,7 @@ const UploadZone = () => {
         try {
             // Use window.location.hostname to allows access from other devices (e.g. phone)
             // This assumes backend is running on port 8080 on the same machine
-            const apiUrl = `https://converstion-toolbox.onrender.com`;
+            const apiUrl = `https://converstion-toolbox.onrender.com/api/convert`;
 
             const response = await axios.post(apiUrl, formData, {
                 responseType: 'blob', // Important for file download
