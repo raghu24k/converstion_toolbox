@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { Instagram, Mail } from 'lucide-react';
 import Hero from './components/Hero';
 import UploadZone from './components/UploadZone';
@@ -57,6 +58,7 @@ function App() {
             </p>
           </div>
         </footer>
+        <Analytics />
       </div>
     </Router>
   );
