@@ -41,8 +41,8 @@ public class PdfToWordConversionService implements ConversionService {
             
             for (int i = 0; i < pages; i++) {
                 // Render page
-                // Scale 2.0 for better quality
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(i, 150, ImageType.RGB);
+                // Scale to 100 DPI for faster performance (still good for screen/print)
+                BufferedImage bim = pdfRenderer.renderImageWithDPI(i, 100, ImageType.RGB);
                 
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 ImageIO.write(bim, "jpeg", os);
