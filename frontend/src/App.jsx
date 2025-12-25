@@ -4,12 +4,13 @@ import { Analytics } from '@vercel/analytics/react';
 import { Instagram, Mail } from 'lucide-react';
 import Hero from './components/Hero';
 import UploadZone from './components/UploadZone';
+import ThemeToggle from './components/ThemeToggle';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
-        <nav className="bg-white shadow-sm z-10">
+      <div className="min-h-screen flex flex-col transition-colors duration-300 dark:bg-gray-950">
+        <nav className="bg-white dark:bg-gray-900 shadow-sm z-10 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex items-center">
@@ -33,6 +34,7 @@ function App() {
                 >
                   <Instagram className="h-5 w-5" />
                 </a>
+                <ThemeToggle />
               </div>
             </div>
           </div>
@@ -51,7 +53,7 @@ function App() {
           </Routes>
         </main>
 
-        <footer className="bg-white border-t mt-auto">
+        <footer className="bg-white dark:bg-gray-900 border-t dark:border-gray-800 mt-auto transition-colors duration-300">
           <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <p className="text-center text-gray-500 text-sm">
               © 2025 ToolBox. Created by <span className="font-semibold text-primary">Raghuwinder Kumar</span>. All rights reserved.

@@ -59,12 +59,12 @@ const UploadZone = () => {
 
     return (
         <div className="max-w-xl mx-auto">
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-primary transition-colors bg-white">
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-md hover:border-primary transition-colors bg-white dark:bg-gray-800">
                 <div className="space-y-1 text-center">
                     {file ? (
                         <div className="flex flex-col items-center">
                             <File className="mx-auto h-12 w-12 text-primary" />
-                            <p className="mt-2 text-sm text-gray-600">{file.name}</p>
+                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{file.name}</p>
                             <button
                                 onClick={() => setFile(null)}
                                 className="mt-2 text-xs text-red-500 hover:text-red-700"
@@ -74,18 +74,18 @@ const UploadZone = () => {
                         </div>
                     ) : (
                         <>
-                            <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                            <Upload className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
                             <div className="flex text-sm text-gray-600">
                                 <label
                                     htmlFor="file-upload"
-                                    className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                                    className="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-primary hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                                 >
                                     <span>Upload a file</span>
                                     <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} />
                                 </label>
                                 <p className="pl-1">or drag and drop</p>
                             </div>
-                            <p className="text-xs text-gray-500">Support for PDF, DOCX, XLSX, PPTX, JPG, PNG</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Support for PDF, DOCX, XLSX, PPTX, JPG, PNG</p>
                         </>
                     )}
                 </div>
@@ -124,11 +124,11 @@ const UploadZone = () => {
 
                         return (
                             <div>
-                                <label htmlFor="format" className="block text-sm font-medium text-gray-700">Convert to:</label>
+                                <label htmlFor="format" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Convert to:</label>
                                 <select
                                     id="format"
                                     name="format"
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
                                     value={targetFormat}
                                     onChange={(e) => setTargetFormat(e.target.value)}
                                 >
@@ -185,7 +185,7 @@ const UploadZone = () => {
                             setStatus('idle');
                             setDownloadUrl(null);
                         }}
-                        className="text-sm text-gray-500 underline hover:text-gray-700"
+                        className="text-sm text-gray-500 dark:text-gray-400 underline hover:text-gray-700 dark:hover:text-gray-200"
                     >
                         Convert another file
                     </button>
