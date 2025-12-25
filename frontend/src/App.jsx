@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Instagram, Mail } from 'lucide-react';
 import Hero from './components/Hero';
 import UploadZone from './components/UploadZone';
@@ -53,8 +54,8 @@ function App() {
                       <button
                         onClick={() => setActiveTab('convert')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'convert'
-                            ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                          ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                           }`}
                       >
                         Convert Files
@@ -62,8 +63,8 @@ function App() {
                       <button
                         onClick={() => setActiveTab('merge')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'merge'
-                            ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                          ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                           }`}
                       >
                         Merge PDFs
@@ -86,6 +87,7 @@ function App() {
           </div>
         </footer>
         <Analytics />
+        <SpeedInsights />
       </div>
     </Router>
   );
