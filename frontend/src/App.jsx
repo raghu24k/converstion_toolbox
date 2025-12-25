@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { Instagram, Mail } from 'lucide-react';
 import Hero from './components/Hero';
 import UploadZone from './components/UploadZone';
+import MergeZone from './components/MergeZone';
 import ThemeToggle from './components/ThemeToggle';
 
 function App() {
+  const [activeTab, setActiveTab] = useState('convert');
   return (
     <Router>
       <div className="min-h-screen flex flex-col transition-colors duration-300 dark:bg-gray-950">
@@ -46,7 +48,30 @@ function App() {
               <>
                 <Hero />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                  <UploadZone />
+                  <div className="flex justify-center mb-8">
+                    <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-lg inline-flex">
+                      <button
+                        onClick={() => setActiveTab('convert')}
+                        className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'convert'
+                            ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                          }`}
+                      >
+                        Convert Files
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('merge')}
+                        className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'merge'
+                            ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                          }`}
+                      >
+                        Merge PDFs
+                      </button>
+                    </div>
+                  </div>
+
+                  {activeTab === 'convert' ? <UploadZone /> : <MergeZone />}
                 </div>
               </>
             } />
