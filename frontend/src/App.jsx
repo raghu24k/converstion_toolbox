@@ -6,12 +6,24 @@ import { Instagram, Mail } from 'lucide-react';
 import Hero from './components/Hero';
 import UploadZone from './components/UploadZone';
 import MergeZone from './components/MergeZone';
+import CropTool from './components/CropTool';
+import RemoveBgTool from './components/RemoveBgTool';
+import ImageToIcon from './components/ImageToIcon';
 import ThemeToggle from './components/ThemeToggle';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
 
 function App() {
   const [activeTab, setActiveTab] = useState('convert');
+
+  const tabs = [
+    { id: 'convert', label: 'Convert' },
+    { id: 'merge', label: 'Merge PDF' },
+    { id: 'crop', label: 'Crop' },
+    { id: 'removebg', label: 'Remove BG' },
+    { id: 'icon', label: 'To Icon' },
+  ];
+
   return (
     <Router>
       <div className="min-h-screen flex flex-col transition-colors duration-300 dark:bg-gray-950">
@@ -59,30 +71,30 @@ function App() {
               <>
                 <Hero />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                  <div className="flex justify-center mb-8">
-                    <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-lg inline-flex">
-                      <button
-                        onClick={() => setActiveTab('convert')}
-                        className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'convert'
-                          ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
-                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                          }`}
-                      >
-                        Convert Files
-                      </button>
-                      <button
-                        onClick={() => setActiveTab('merge')}
-                        className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'merge'
-                          ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
-                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                          }`}
-                      >
-                        Merge PDFs
-                      </button>
+                  {/* Tab Navigation */}
+                  <div className="flex justify-center mb-8 overflow-x-auto">
+                    <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-lg inline-flex gap-1">
+                      {tabs.map(tab => (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
+                              ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  {activeTab === 'convert' ? <UploadZone /> : <MergeZone />}
+                  {/* Tab Content */}
+                  {activeTab === 'convert' && <UploadZone />}
+                  {activeTab === 'merge' && <MergeZone />}
+                  {activeTab === 'crop' && <CropTool />}
+                  {activeTab === 'removebg' && <RemoveBgTool />}
+                  {activeTab === 'icon' && <ImageToIcon />}
                 </div>
               </>
             } />
@@ -101,24 +113,24 @@ function App() {
                 </p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tools</h3>
+                <ul className="space-y-2">
+                  <li><button onClick={() => setActiveTab('convert')} className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">File Converter</button></li>
+                  <li><button onClick={() => setActiveTab('merge')} className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">Merge PDFs</button></li>
+                  <li><button onClick={() => setActiveTab('crop')} className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">Crop Image</button></li>
+                  <li><button onClick={() => setActiveTab('removebg')} className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">Remove Background</button></li>
+                  <li><button onClick={() => setActiveTab('icon')} className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">Image to Icon</button></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Links</h3>
                 <ul className="space-y-2">
                   <li><Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">Home</Link></li>
                   <li><Link to="/about" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">About</Link></li>
                   <li><Link to="/faq" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">FAQ</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Connect</h3>
-                <ul className="space-y-2">
                   <li>
                     <a href="mailto:raghuwinderkumar24k@gmail.com" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">
-                      raghuwinderkumar24k@gmail.com
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://www.instagram.com/raghuwinder17/" target="_blank" rel="noopener noreferrer" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">
-                      Instagram
+                      Contact
                     </a>
                   </li>
                 </ul>
