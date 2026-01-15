@@ -10,6 +10,7 @@ const UploadZone = () => {
     const [targetFormat, setTargetFormat] = useState('pdf');
     const [downloadUrl, setDownloadUrl] = useState(null);
     const [downloadName, setDownloadName] = useState('');
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -17,6 +18,7 @@ const UploadZone = () => {
             setFile(f);
             setStatus('idle');
             setErrorMsg('');
+            setUploadProgress(0);
 
             const ext = f.name.split('.').pop().toLowerCase();
             if (ext === 'pdf') {
@@ -31,21 +33,23 @@ const UploadZone = () => {
         if (!file) return;
 
         setStatus('uploading');
+        setUploadProgress(0);
         const formData = new FormData();
         formData.append('file', file);
         formData.append('targetFormat', targetFormat);
 
         try {
-            // Use window.location.hostname to allows access from other devices (e.g. phone)
-            // This assumes backend is running on port 8080 on the same machine
             const apiUrl = `https://converstion-toolbox.onrender.com/api/convert`;
 
             const response = await axios.post(apiUrl, formData, {
-                responseType: 'blob', // Important for file download
+                responseType: 'blob',
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(Math.min(percentCompleted, 95)); // Cap at 95% until processing is done
+                },
             });
 
-            // Create download link
-            // Create download link
+            setUploadProgress(100);
             const url = window.URL.createObjectURL(new Blob([response.data]));
             setDownloadUrl(url);
             setDownloadName(`converted-${file.name.split('.')[0]}.${targetFormat}`);
@@ -54,6 +58,7 @@ const UploadZone = () => {
             console.error('Conversion failed', error);
             setStatus('error');
             setErrorMsg('Conversion failed. Please try again.');
+            setUploadProgress(0);
         }
     };
 
@@ -107,7 +112,6 @@ const UploadZone = () => {
                                 { value: 'txt', label: 'Text File (.txt)' }
                             ];
                         } else if (['jpg', 'jpeg', 'png'].includes(extension)) {
-                            // Determine alternate image format
                             const isPng = extension === 'png';
                             const altImgVal = isPng ? 'jpg' : 'png';
                             const altImgLabel = isPng ? 'JPEG Image (.jpg)' : 'PNG Image (.png)';
@@ -116,7 +120,8 @@ const UploadZone = () => {
                                 { value: 'pdf', label: 'PDF Document (.pdf)' },
                                 { value: 'docx', label: 'Word Document (.docx)' },
                                 { value: 'pptx', label: 'PowerPoint Presentation (.pptx)' },
-                                { value: altImgVal, label: altImgLabel }
+                                { value: altImgVal, label: altImgLabel },
+                                { value: 'ico', label: 'Icon File (.ico)' }
                             ];
                         } else if (['docx', 'doc', 'pptx', 'ppt', 'xlsx', 'xls'].includes(extension)) {
                             options = [{ value: 'pdf', label: 'PDF Document (.pdf)' }];
@@ -156,9 +161,23 @@ const UploadZone = () => {
             )}
 
             {status === 'uploading' && (
-                <div className="mt-4 flex justify-center items-center text-primary">
-                    <Loader className="animate-spin h-5 w-5 mr-2" />
-                    <span>Converting...</span>
+                <div className="mt-4 space-y-3">
+                    <div className="flex justify-center items-center text-primary">
+                        <Loader className="animate-spin h-5 w-5 mr-2" />
+                        <span>Converting... {uploadProgress}%</span>
+                    </div>
+                    {/* Progress Bar */}
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                        <motion.div
+                            className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${uploadProgress}%` }}
+                            transition={{ duration: 0.3 }}
+                        />
+                    </div>
+                    <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                        {uploadProgress < 50 ? 'Uploading file...' : uploadProgress < 95 ? 'Processing...' : 'Almost done...'}
+                    </p>
                 </div>
             )}
 
@@ -184,6 +203,7 @@ const UploadZone = () => {
                             setFile(null);
                             setStatus('idle');
                             setDownloadUrl(null);
+                            setUploadProgress(0);
                         }}
                         className="text-sm text-gray-500 dark:text-gray-400 underline hover:text-gray-700 dark:hover:text-gray-200"
                     >
