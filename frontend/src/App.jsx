@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Instagram, Mail } from 'lucide-react';
@@ -7,6 +7,8 @@ import Hero from './components/Hero';
 import UploadZone from './components/UploadZone';
 import MergeZone from './components/MergeZone';
 import ThemeToggle from './components/ThemeToggle';
+import About from './pages/About';
+import FAQ from './pages/FAQ';
 
 function App() {
   const [activeTab, setActiveTab] = useState('convert');
@@ -16,13 +18,21 @@ function App() {
         <nav className="bg-white dark:bg-gray-900 shadow-sm z-10 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <span className="text-2xl font-bold text-primary">ToolBox</span>
+              <div className="flex items-center space-x-8">
+                <Link to="/" className="text-2xl font-bold text-primary">ToolBox</Link>
+                <div className="hidden md:flex items-center space-x-4">
+                  <Link to="/about" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors text-sm font-medium">
+                    About
+                  </Link>
+                  <Link to="/faq" className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors text-sm font-medium">
+                    FAQ
+                  </Link>
+                </div>
               </div>
               <div className="flex items-center space-x-6">
                 <a
                   href="mailto:raghuwinderkumar24k@gmail.com"
-                  className="flex items-center text-gray-600 hover:text-primary transition-colors group"
+                  className="flex items-center text-gray-600 dark:text-gray-300 hover:text-primary transition-colors group"
                   title="raghuwinderkumar24k@gmail.com"
                 >
                   <Mail className="h-5 w-5 mr-2" />
@@ -32,7 +42,7 @@ function App() {
                   href="https://www.instagram.com/raghuwinder17/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center text-gray-600 hover:text-pink-600 transition-colors"
+                  className="flex items-center text-gray-600 dark:text-gray-300 hover:text-pink-600 transition-colors"
                   title="Follow on Instagram"
                 >
                   <Instagram className="h-5 w-5" />
@@ -76,14 +86,49 @@ function App() {
                 </div>
               </>
             } />
+            <Route path="/about" element={<About />} />
+            <Route path="/faq" element={<FAQ />} />
           </Routes>
         </main>
 
         <footer className="bg-white dark:bg-gray-900 border-t dark:border-gray-800 mt-auto transition-colors duration-300">
-          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <p className="text-center text-gray-500 text-sm">
-              © 2025 ToolBox. Created by <span className="font-semibold text-primary">Raghuwinder Kumar</span>. All rights reserved.
-            </p>
+          <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">ToolBox</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                  Free online file converter. Convert PDF, Word, Excel, PowerPoint, and images instantly.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
+                <ul className="space-y-2">
+                  <li><Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">Home</Link></li>
+                  <li><Link to="/about" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">About</Link></li>
+                  <li><Link to="/faq" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">FAQ</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Connect</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a href="mailto:raghuwinderkumar24k@gmail.com" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">
+                      raghuwinderkumar24k@gmail.com
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/raghuwinder17/" target="_blank" rel="noopener noreferrer" className="text-gray-500 dark:text-gray-400 hover:text-primary text-sm">
+                      Instagram
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="border-t dark:border-gray-800 pt-6">
+              <p className="text-center text-gray-500 text-sm">
+                © 2025 ToolBox. Created by <span className="font-semibold text-primary">Raghuwinder Kumar</span>. All rights reserved.
+              </p>
+            </div>
           </div>
         </footer>
         <Analytics />
