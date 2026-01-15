@@ -1,13 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Upload, Download, Loader, Eraser } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { removeBackground } from '@imgly/background-removal';
 
 const RemoveBgTool = () => {
     const [image, setImage] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     const [imageName, setImageName] = useState('');
     const [processedImage, setProcessedImage] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
-    const canvasRef = useRef(null);
+    const [progress, setProgress] = useState(0);
+    const [statusText, setStatusText] = useState('');
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -16,82 +19,52 @@ const RemoveBgTool = () => {
                 alert('Please select an image file');
                 return;
             }
+            setImageFile(file);
             setImageName(file.name);
             const reader = new FileReader();
             reader.onload = (event) => {
                 setImage(event.target.result);
                 setProcessedImage(null);
+                setProgress(0);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const removeBackground = async () => {
-        if (!image) return;
+    const handleRemoveBackground = async () => {
+        if (!imageFile) return;
 
         setIsProcessing(true);
+        setProgress(0);
+        setStatusText('Loading AI model...');
 
-        // Client-side background removal using canvas
-        // This is a simple implementation using color-based removal
-        // For production, consider using an API like remove.bg
+        try {
+            const blob = await removeBackground(imageFile, {
+                progress: (key, current, total) => {
+                    const percent = Math.round((current / total) * 100);
+                    setProgress(percent);
 
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-
-            // Get background color from corners (assuming background is uniform)
-            const corners = [
-                { x: 0, y: 0 },
-                { x: canvas.width - 1, y: 0 },
-                { x: 0, y: canvas.height - 1 },
-                { x: canvas.width - 1, y: canvas.height - 1 }
-            ];
-
-            let bgR = 0, bgG = 0, bgB = 0;
-            corners.forEach(corner => {
-                const idx = (corner.y * canvas.width + corner.x) * 4;
-                bgR += data[idx];
-                bgG += data[idx + 1];
-                bgB += data[idx + 2];
-            });
-            bgR = Math.round(bgR / 4);
-            bgG = Math.round(bgG / 4);
-            bgB = Math.round(bgB / 4);
-
-            // Threshold for considering a pixel as background
-            const threshold = 60;
-
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-
-                // Calculate color distance from background
-                const distance = Math.sqrt(
-                    Math.pow(r - bgR, 2) +
-                    Math.pow(g - bgG, 2) +
-                    Math.pow(b - bgB, 2)
-                );
-
-                // If color is similar to background, make transparent
-                if (distance < threshold) {
-                    data[i + 3] = 0; // Set alpha to 0
+                    if (key === 'fetch:model') {
+                        setStatusText('Downloading AI model (first time only)...');
+                    } else if (key === 'compute:inference') {
+                        setStatusText('Analyzing image...');
+                    } else if (key === 'compute:mask') {
+                        setStatusText('Creating mask...');
+                    } else {
+                        setStatusText('Processing...');
+                    }
                 }
-            }
+            });
 
-            ctx.putImageData(imageData, 0, 0);
-            setProcessedImage(canvas.toDataURL('image/png'));
+            const url = URL.createObjectURL(blob);
+            setProcessedImage(url);
+            setStatusText('Done!');
+        } catch (error) {
+            console.error('Background removal failed:', error);
+            alert('Background removal failed. Please try again.');
+        } finally {
             setIsProcessing(false);
-        };
-        img.src = image;
+        }
     };
 
     const downloadImage = () => {
@@ -107,8 +80,11 @@ const RemoveBgTool = () => {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
                 Remove Background
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
-                Upload an image to automatically remove its background
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-2">
+                AI-powered background removal - works with any image
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-500 text-center mb-6">
+                First use may take longer as the AI model downloads (~30MB)
             </p>
 
             {!image ? (
@@ -122,7 +98,6 @@ const RemoveBgTool = () => {
                             </label>
                         </div>
                         <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
-                        <p className="text-xs text-gray-400 mt-2">Best results with solid color backgrounds</p>
                     </div>
                 </div>
             ) : (
@@ -149,6 +124,12 @@ const RemoveBgTool = () => {
                             >
                                 {processedImage ? (
                                     <img src={processedImage} alt="Processed" className="max-h-64 mx-auto rounded" />
+                                ) : isProcessing ? (
+                                    <div className="text-center">
+                                        <Loader className="w-8 h-8 animate-spin text-primary mx-auto mb-2" />
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">{statusText}</p>
+                                        <p className="text-xs text-gray-500 mt-1">{progress}%</p>
+                                    </div>
                                 ) : (
                                     <p className="text-gray-500 dark:text-gray-400">
                                         Click "Remove Background" to process
@@ -158,26 +139,28 @@ const RemoveBgTool = () => {
                         </div>
                     </div>
 
+                    {/* Progress Bar */}
+                    {isProcessing && (
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <motion.div
+                                className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        </div>
+                    )}
+
                     <div className="flex justify-center gap-4">
-                        {!processedImage && (
+                        {!processedImage && !isProcessing && (
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={removeBackground}
-                                disabled={isProcessing}
-                                className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                                onClick={handleRemoveBackground}
+                                className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-md hover:bg-indigo-700"
                             >
-                                {isProcessing ? (
-                                    <>
-                                        <Loader className="w-4 h-4 animate-spin" />
-                                        Processing...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Eraser className="w-4 h-4" />
-                                        Remove Background
-                                    </>
-                                )}
+                                <Eraser className="w-4 h-4" />
+                                Remove Background
                             </motion.button>
                         )}
 
@@ -195,7 +178,7 @@ const RemoveBgTool = () => {
                     </div>
 
                     <button
-                        onClick={() => { setImage(null); setProcessedImage(null); }}
+                        onClick={() => { setImage(null); setProcessedImage(null); setImageFile(null); }}
                         className="block mx-auto text-sm text-gray-500 underline"
                     >
                         Upload different image
