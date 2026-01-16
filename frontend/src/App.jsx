@@ -220,7 +220,7 @@ function App() {
               </div>
             </div>
             <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500">
-              © {new Date().getFullYear()} ToolBox. Created by Raghuwinder Kumar.
+              © {new Date().getFullYear()} ToolBox. Created by <span className="font-bold text-purple-600 dark:text-purple-400">Raghuwinder Kumar</span>. All rights reserved.
             </div>
           </div>
         </footer>
