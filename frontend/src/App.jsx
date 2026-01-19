@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { Instagram, Mail, FileOutput, Files, Scissors, Eraser, Image as ImageIcon, ArrowLeft } from 'lucide-react';
+import { Instagram, Mail, FileOutput, Files, Scissors, Eraser, Image as ImageIcon, ArrowLeft, Github } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './components/Hero';
 import UploadZone from './components/UploadZone';
@@ -94,6 +94,15 @@ function App() {
                   title="Contact"
                 >
                   <Mail className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                </a>
+                <a
+                  href="https://github.com/raghu24k"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  title="GitHub Profile"
+                >
+                  <Github className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                 </a>
                 <ThemeToggle />
               </div>
