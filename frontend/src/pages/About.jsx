@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Shield, Zap, Globe, Github, Instagram, Mail, Code, User, MapPin } from 'lucide-react';
 
+
 const About = () => {
     const features = [
         {
@@ -106,7 +107,7 @@ const About = () => {
                                 <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                                     Hi! I'm a passionate developer who loves building useful web applications that solve real-world problems.
                                     I built ToolBox to provide a simple, privacy-focused alternative to cluttered file conversion sites.
-                                    My expertise lies in modern web technologies including React, Spring Boot, and Cloud Computing.
+                                    My expertise lies in modern web technologies including Python, React.
                                 </p>
 
                                 <div className="flex flex-wrap justify-center md:justify-start gap-4">
