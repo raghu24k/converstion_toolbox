@@ -31,24 +31,43 @@ public class PdfConversionService implements ConversionService {
 
         PDDocument document = new PDDocument();
         try {
-            PDPage page = new PDPage(PDRectangle.A4);
-            document.addPage(page);
-
             // Create a temporary file for the image
             File tempImage = File.createTempFile("upload-", file.getOriginalFilename());
             file.transferTo(tempImage);
 
             PDImageXObject pdImage = PDImageXObject.createFromFile(tempImage.getAbsolutePath(), document);
             
+            // Auto-rotate logic
+            boolean isLandscape = pdImage.getWidth() > pdImage.getHeight();
+            PDRectangle pageSize = isLandscape 
+                ? new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()) 
+                : PDRectangle.A4;
+
+            PDPage page = new PDPage(pageSize);
+            document.addPage(page);
+            
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
-                // Fit image to page logic could go here, for now just drawing it 1:1 or scaled
-                float scale = Math.min(PDRectangle.A4.getWidth() / pdImage.getWidth(), 
-                                     PDRectangle.A4.getHeight() / pdImage.getHeight());
+                float margin = 20f;
+                float pdfWidth = pageSize.getWidth();
+                float pdfHeight = pageSize.getHeight();
                 
-                float newWidth = pdImage.getWidth() * scale;
-                float newHeight = pdImage.getHeight() * scale;
+                float imgWidth = pdImage.getWidth();
+                float imgHeight = pdImage.getHeight();
+
+                // Calculate scale to fit within margins
+                float scale = Math.min(
+                    (pdfWidth - 2 * margin) / imgWidth, 
+                    (pdfHeight - 2 * margin) / imgHeight
+                );
                 
-                contentStream.drawImage(pdImage, 20, 20, newWidth, newHeight);
+                float newWidth = imgWidth * scale;
+                float newHeight = imgHeight * scale;
+                
+                // Calculate centered position
+                float startX = (pdfWidth - newWidth) / 2;
+                float startY = (pdfHeight - newHeight) / 2;
+                
+                contentStream.drawImage(pdImage, startX, startY, newWidth, newHeight);
             }
             
             // Cleanup temp image
