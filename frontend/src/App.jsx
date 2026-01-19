@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Instagram, Mail, FileOutput, Files, Scissors, Eraser, Image as ImageIcon, ArrowLeft, Github } from 'lucide-react';
@@ -14,54 +14,102 @@ import ThemeToggle from './components/ThemeToggle';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
 
+const tools = [
+  {
+    id: 'convert',
+    title: 'File Converter',
+    description: 'Convert PDF, Word, Excel, and Images to other formats.',
+    icon: <FileOutput className="w-8 h-8 text-blue-500" />,
+    colors: 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800',
+    component: <UploadZone />
+  },
+  {
+    id: 'merge',
+    title: 'Merge PDFs',
+    description: 'Combine multiple PDF files into a single document.',
+    icon: <Files className="w-8 h-8 text-purple-500" />,
+    colors: 'bg-purple-50 dark:bg-purple-900/20 border-purple-100 dark:border-purple-800',
+    component: <MergeZone />
+  },
+  {
+    id: 'crop',
+    title: 'Crop Image',
+    description: 'Trim and resize your images to the perfect dimensions.',
+    icon: <Scissors className="w-8 h-8 text-green-500" />,
+    colors: 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800',
+    component: <CropTool />
+  },
+  {
+    id: 'removebg',
+    title: 'Remove Background',
+    description: 'Automatically remove usage backgrounds with AI.',
+    icon: <Eraser className="w-8 h-8 text-red-500" />,
+    colors: 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800',
+    component: <RemoveBgTool />
+  },
+  {
+    id: 'icon',
+    title: 'Image to Icon',
+    description: 'Generate app icons and favicons from any image.',
+    icon: <ImageIcon className="w-8 h-8 text-yellow-500" />,
+    colors: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-800',
+    component: <ImageToIcon />
+  }
+];
+
+const ToolPage = () => {
+  const { toolId } = useParams();
+  const currentTool = tools.find(t => t.id === toolId);
+
+  // If tool not found, redirect or show error
+  if (!currentTool) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center">
+        <h2 className="text-xl font-bold mb-4">Tool not found</h2>
+        <Link to="/" className="text-primary hover:underline">Back to Home</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-[80vh] bg-gray-50/50 dark:bg-gray-950">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <Link
+          to="/"
+          className="flex items-center text-sm font-medium text-gray-500 hover:text-primary mb-6 group"
+        >
+          <ArrowLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+          Back to Tools
+        </Link>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden"
+        >
+          <div className="p-8 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-center space-x-4 mb-2">
+              <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                {currentTool.icon}
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {currentTool.title}
+              </h1>
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 ml-14">
+              {currentTool.description}
+            </p>
+          </div>
+          <div className="p-8 bg-gray-50/30 dark:bg-gray-900/30">
+            {currentTool.component}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
 function App() {
-  const [activeTool, setActiveTool] = useState(null);
-
-  const tools = [
-    {
-      id: 'convert',
-      title: 'File Converter',
-      description: 'Convert PDF, Word, Excel, and Images to other formats.',
-      icon: <FileOutput className="w-8 h-8 text-blue-500" />,
-      colors: 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800',
-      component: <UploadZone />
-    },
-    {
-      id: 'merge',
-      title: 'Merge PDFs',
-      description: 'Combine multiple PDF files into a single document.',
-      icon: <Files className="w-8 h-8 text-purple-500" />,
-      colors: 'bg-purple-50 dark:bg-purple-900/20 border-purple-100 dark:border-purple-800',
-      component: <MergeZone />
-    },
-    {
-      id: 'crop',
-      title: 'Crop Image',
-      description: 'Trim and resize your images to the perfect dimensions.',
-      icon: <Scissors className="w-8 h-8 text-green-500" />,
-      colors: 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800',
-      component: <CropTool />
-    },
-    {
-      id: 'removebg',
-      title: 'Remove Background',
-      description: 'Automatically remove usage backgrounds with AI.',
-      icon: <Eraser className="w-8 h-8 text-red-500" />,
-      colors: 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800',
-      component: <RemoveBgTool />
-    },
-    {
-      id: 'icon',
-      title: 'Image to Icon',
-      description: 'Generate app icons and favicons from any image.',
-      icon: <ImageIcon className="w-8 h-8 text-yellow-500" />,
-      colors: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-800',
-      component: <ImageToIcon />
-    }
-  ];
-
-  const currentTool = tools.find(t => t.id === activeTool);
-
   return (
     <Router>
       <div className="min-h-screen flex flex-col transition-colors duration-300 dark:bg-gray-950 font-sans">
@@ -73,7 +121,6 @@ function App() {
               <div className="flex items-center space-x-8">
                 <Link
                   to="/"
-                  onClick={() => setActiveTool(null)}
                   className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent cursor-pointer"
                 >
                   ToolBox
@@ -114,81 +161,46 @@ function App() {
           <Routes>
             <Route path="/" element={
               <>
-                {!activeTool ? (
-                  <>
-                    <Hero />
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="tools">
-                      <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                          All-in-One Online PDF & Image Tools
-                        </h2>
-                        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                          Make use of our collection of free online PDF tools to convert, merge, edit, and more.
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {tools.map((tool) => (
-                          <motion.div
-                            key={tool.id}
-                            whileHover={{ y: -5 }}
-                            className={`relative group p-6 rounded-2xl border ${tool.colors} bg-opacity-50 dark:bg-opacity-10 backdrop-blur-sm cursor-pointer transition-all duration-300 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800`}
-                            onClick={() => setActiveTool(tool.id)}
-                          >
-                            <div className="flex items-start justify-between mb-4">
-                              <div className="p-3 bg-white dark:bg-gray-900 rounded-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                {tool.icon}
-                              </div>
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                              {tool.title}
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                              {tool.description}
-                            </p>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="min-h-[80vh] bg-gray-50/50 dark:bg-gray-950">
-                    <div className="max-w-4xl mx-auto px-4 py-8">
-                      <button
-                        onClick={() => setActiveTool(null)}
-                        className="flex items-center text-sm font-medium text-gray-500 hover:text-primary mb-6 group"
-                      >
-                        <ArrowLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
-                        Back to Tools
-                      </button>
-
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden"
-                      >
-                        <div className="p-8 border-b border-gray-100 dark:border-gray-800">
-                          <div className="flex items-center space-x-4 mb-2">
-                            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                              {currentTool?.icon}
-                            </div>
-                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                              {currentTool?.title}
-                            </h1>
-                          </div>
-                          <p className="text-gray-500 dark:text-gray-400 ml-14">
-                            {currentTool?.description}
-                          </p>
-                        </div>
-                        <div className="p-8 bg-gray-50/30 dark:bg-gray-900/30">
-                          {currentTool?.component}
-                        </div>
-                      </motion.div>
-                    </div>
+                <Hero />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="tools">
+                  <div className="text-center mb-12">
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                      All-in-One Online PDF & Image Tools
+                    </h2>
+                    <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                      Make use of our collection of free online PDF tools to convert, merge, edit, and more.
+                    </p>
                   </div>
-                )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {tools.map((tool) => (
+                      <Link
+                        to={`/tool/${tool.id}`}
+                        key={tool.id}
+                      >
+                        <motion.div
+                          whileHover={{ y: -5 }}
+                          className={`relative group p-6 rounded-2xl border ${tool.colors} bg-opacity-50 dark:bg-opacity-10 backdrop-blur-sm cursor-pointer transition-all duration-300 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 h-full`}
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="p-3 bg-white dark:bg-gray-900 rounded-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+                              {tool.icon}
+                            </div>
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                            {tool.title}
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                            {tool.description}
+                          </p>
+                        </motion.div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </>
             } />
+            <Route path="/tool/:toolId" element={<ToolPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/faq" element={<FAQ />} />
           </Routes>
@@ -214,9 +226,10 @@ function App() {
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Tools</h4>
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                  <li><button onClick={() => setActiveTool('convert')} className="hover:text-primary">Converter</button></li>
-                  <li><button onClick={() => setActiveTool('merge')} className="hover:text-primary">Merge PDF</button></li>
-                  <li><button onClick={() => setActiveTool('removebg')} className="hover:text-primary">Remove BG</button></li>
+                  <li><Link to="/tool/convert" className="hover:text-primary">Converter</Link></li>
+                  <li><Link to="/tool/merge" className="hover:text-primary">Merge PDF</Link></li>
+                  <li><Link to="/tool/removebg" className="hover:text-primary">Remove BG</Link></li>
+                  <li><Link to="/tool/crop" className="hover:text-primary">Crop Image</Link></li>
                 </ul>
               </div>
               <div>
