@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Shield, Zap, Globe } from 'lucide-react';
+import { FileText, Shield, Zap, Globe, Github, Instagram, Mail, Code, User, MapPin } from 'lucide-react';
 
 const About = () => {
     const features = [
@@ -72,7 +72,7 @@ const About = () => {
                         Supported Conversions
                     </h2>
 
-                    <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2 mb-8">
+                    <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2 mb-12">
                         <li>PDF to Word (DOCX)</li>
                         <li>PDF to PowerPoint (PPTX)</li>
                         <li>PDF to Excel (XLSX)</li>
@@ -82,19 +82,60 @@ const About = () => {
                         <li>PowerPoint to PDF</li>
                         <li>Image to PDF</li>
                         <li>Merge Multiple PDFs</li>
-                        <li>Image Format Conversion (JPG ↔ PNG)</li>
+                        <li>Crop Images</li>
+                        <li>Remove Background (AI)</li>
+                        <li>Generate Icons</li>
                     </ul>
 
-                    <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                        About the Developer
-                    </h2>
+                    {/* Developer Section */}
+                    <div className="border-t border-gray-200 dark:border-gray-800 pt-12">
+                        <div className="flex flex-col md:flex-row items-center gap-8 bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-8 border border-gray-100 dark:border-gray-800">
+                            {/* Profile Image / Initials */}
+                            <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-4xl font-bold text-white shadow-lg shrink-0">
+                                RK
+                            </div>
 
-                    <p className="text-gray-600 dark:text-gray-300">
-                        ToolBox is created by <span className="font-semibold text-primary">Raghuwinder Kumar</span>,
-                        a passionate developer focused on building useful web applications.
-                        This project showcases full-stack development skills using React,
-                        Java Spring Boot, and modern cloud deployment practices.
-                    </p>
+                            <div className="flex-1 text-center md:text-left">
+                                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                                    Raghuwinder Kumar
+                                </h2>
+                                <p className="text-primary font-medium mb-4 flex items-center justify-center md:justify-start gap-2">
+                                    <Code className="w-4 h-4" /> Full Stack Developer
+                                </p>
+
+                                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                                    Hi! I'm a passionate developer who loves building useful web applications that solve real-world problems.
+                                    I built ToolBox to provide a simple, privacy-focused alternative to cluttered file conversion sites.
+                                    My expertise lies in modern web technologies including React, Spring Boot, and Cloud Computing.
+                                </p>
+
+                                <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                                    <a
+                                        href="https://github.com/raghu24k"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-2 px-4 py-2 bg-gray-900 dark:bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                                    >
+                                        <Github className="w-4 h-4" /> GitHub
+                                    </a>
+                                    <a
+                                        href="https://www.instagram.com/raghuwinder17/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+                                    >
+                                        <Instagram className="w-4 h-4" /> Instagram
+                                    </a>
+                                    <a
+                                        href="mailto:raghuwinderkumar24k@gmail.com"
+                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                    >
+                                        <Mail className="w-4 h-4" /> Email Me
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
             </div>
         </div>
