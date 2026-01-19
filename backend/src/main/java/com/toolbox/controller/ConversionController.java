@@ -22,6 +22,11 @@ public class ConversionController {
     @Autowired
     private List<ConversionService> conversionServices;
 
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Server is running");
+    }
+
     @PostMapping("/convert")
     public ResponseEntity<Resource> convertFile(@RequestParam("file") MultipartFile file,
                                                 @RequestParam("targetFormat") String targetFormat) {

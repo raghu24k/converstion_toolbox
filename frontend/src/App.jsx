@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -61,7 +62,6 @@ const ToolPage = () => {
   const { toolId } = useParams();
   const currentTool = tools.find(t => t.id === toolId);
 
-  // If tool not found, redirect or show error
   if (!currentTool) {
     return (
       <div className="min-h-[50vh] flex flex-col items-center justify-center">
@@ -109,9 +109,27 @@ const ToolPage = () => {
   );
 };
 
+// Component to ping the server on app load
+const ServerWarmer = () => {
+  useEffect(() => {
+    const warmUpServer = async () => {
+      try {
+        // Ping the health endpoint
+        await axios.get('https://converstion-toolbox.onrender.com/api/health');
+        console.log('Server wake-up signal sent');
+      } catch (error) {
+        // Silently fail - network errors or cors might happen but request still hits server
+      }
+    };
+    warmUpServer();
+  }, []);
+  return null;
+};
+
 function App() {
   return (
     <Router>
+      <ServerWarmer />
       <div className="min-h-screen flex flex-col transition-colors duration-300 dark:bg-gray-950 font-sans">
 
         {/* Navbar */}
